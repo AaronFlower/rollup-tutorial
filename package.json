@@ -16,6 +16,11 @@
     "babel-preset-latest": "^6.24.1",
     "rollup": "^0.55.0",
     "rollup-plugin-babel": "^3.0.3",
-    "rollup-plugin-eslint": "^4.0.0"
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-eslint": "^4.0.0",
+    "rollup-plugin-node-resolve": "^3.0.2"
+  },
+  "dependencies": {
+    "debug": "^3.1.0"
   }
 }

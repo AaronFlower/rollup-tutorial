@@ -187,3 +187,75 @@ Successfully created .eslintrc.json file in /Users/easonzhan/learning/git_repos/
      })
 ```
 
+## Step 4: 添加处理非 ES 的 module 插件
+
+有时候在你的项目引入 Node-style 的 module 的时候，不使用插件的话，在  require 的时候将会出错。
+
+以 Node module 的 [debug](https://www.npmjs.com/package/debug#product-navigation) 来举例。
+
+在 main.js 中加入：
+
+```javascript
+import debug from 'debug'
+
+const log = debug('app:log')
+
+debug.enable('*')
+log('Logging is enabled!')
+```
+
+因为 debug 用的是 CommonJS, 在编译时会报错。
+
+```bash
+$ rollup -c rollup.config.js 
+src/scripts/main.js → ./build/js/main.min.js...
+(!) Unresolved dependencies
+https://github.com/rollup/rollup/wiki/Troubleshooting#treating-module-as-external-dependency
+debug (imported by src/scripts/main.js)
+(!) Missing global variable name
+Use options.globals to specify browser global variable names corresponding to external modules
+debug (guessing 'debug')
+created ./build/js/main.min.js in 510ms
+```
+
+解决方法，安装两个库：
+
+- rollup-plugin-node-resolve， 支持引入 node_modules 目录下的 module.
+- rollup-plugin-commonjs, 将 CommonJS 的模块转换成 ES6。
+
+```
+npm install --save-dev rollup-plugin-node-resolve rollup-plugin-commonjs
+```
+
+配置文件修改如下：
+
+```diff
+--- a/rollup.config.js
++++ b/rollup.config.js
+@@ -1,6 +1,8 @@
+ // Rollup plugins
+ import babel from 'rollup-plugin-babel'
+ import eslint from 'rollup-plugin-eslint'
++import commonjs from 'rollup-plugin-commonjs'
++import resolve from 'rollup-plugin-node-resolve'
+
+ export default {
+   input: './src/scripts/main.js',
+@@ -12,8 +14,14 @@ export default {
+   },
+
+   plugins: [
++    resolve({
++      jsnext: true,
++      main: true,
++      browser: true
++    }),
++    commonjs(),
+     eslint({
+-        exclude: 'styles/**'
++      exclude: 'styles/**'
+     }),
+     babel({
+       exclude: 'node_modules/**'
+```
+
