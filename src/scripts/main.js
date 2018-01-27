@@ -12,4 +12,3 @@ content.innerHTML = `
 	<li>sumArray([1, 1, 2, 3, 5, 8, 13]): ${sumFab}</li>
   </ul>
 `
-console.log(hiEason, sumFab)

@@ -138,3 +138,52 @@ npm install --save-dev babel-plugin-external-helpers
 
 ```
 
+## ADD ESlint
+
+### 安装插件
+
+```
+npm install --save-dev rollup-plugin-eslint
+```
+
+### 创建 `.eslintrc.josn`
+
+```bash
+~/learning/git_repos/rollup-tutorial on  master! ⌚ 11:35:11
+$ node_modules/.bin/eslint --init    
+? How would you like to configure ESLint? Answer questions about your style
+? Are you using ECMAScript 6 features? Yes
+? Are you using ES6 modules? Yes
+? Where will your code run? Browser
+? Do you use CommonJS? No
+? Do you use JSX? No
+? What style of indentation do you use? Spaces
+? What quotes do you use for strings? Single
+? What line endings do you use? Unix
+? Do you require semicolons? No
+? What format do you want your config file to be in? JSON
+Successfully created .eslintrc.json file in /Users/easonzhan/learning/git_repos/rollup-tutorial
+```
+### 添加 eslint 插件
+```diff
+--- a/rollup.config.js
++++ b/rollup.config.js
+@@ -1,5 +1,6 @@
+ // Rollup plugins
+ import babel from 'rollup-plugin-babel'
++import eslint from 'rollup-plugin-eslint'
+
+ export default {
+   input: './src/scripts/main.js',
+@@ -11,6 +12,9 @@ export default {
+   },
+
+   plugins: [
++    eslint({
++        exclude: 'styles/**'
++    }),
+     babel({
+       exclude: 'node_modules/**'
+     })
+```
+

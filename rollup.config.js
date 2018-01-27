@@ -1,5 +1,6 @@
 // Rollup plugins
 import babel from 'rollup-plugin-babel'
+import eslint from 'rollup-plugin-eslint'
 
 export default {
   input: './src/scripts/main.js',
@@ -11,6 +12,9 @@ export default {
   },
 
   plugins: [
+    eslint({
+        exclude: 'styles/**'
+    }),
     babel({
       exclude: 'node_modules/**'
     })
