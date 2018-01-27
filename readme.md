@@ -259,3 +259,60 @@ npm install --save-dev rollup-plugin-node-resolve rollup-plugin-commonjs
        exclude: 'node_modules/**'
 ```
 
+## Step 5: 环境变量
+
+在项目的 production 版本中，我们并不需要 debug, 所以需要加一个环境变量来在 devlopment 时开启 debug, 而在 production 时关闭。即 main.js 修改如下：
+
+```diff
+--- a/src/scripts/main.js
++++ b/src/scripts/main.js
+@@ -5,9 +5,12 @@ import debug from 'debug'
+
+ const log = debug('app:log')
+
+-debug.enable('*')
+-log('Logging is enabled!')
+-
++if (ENV !== 'production') {
++  debug.enable('*')
++  log('Logging is enabled!')
++} else {
++  debug.disable()
++}
+```
+
+然后重新构建，刷新浏览器会报 `ReferenceError`错误。这很正常，因为我们并没有在任何地方定义 `ENV`,  在构建的时候，我们执行 `ENV=production rollup -c`也不会成功。因为构建时的 `ENV` 变量是办参构建时有效，构建完后的并不认识。所以我们需要一个插件将我们的环境变量写入一到构建后的文件中去。
+
+这个插件就是：`rollup-plugin-replace`.
+
+```bash
+npm install --save-dev rollup-plugin-replace
+```
+
+修改配置文件：
+
+```diff
+--- a/rollup.config.js
++++ b/rollup.config.js
+@@ -3,6 +3,7 @@ import babel from 'rollup-plugin-babel'
+ import eslint from 'rollup-plugin-eslint'
+ import commonjs from 'rollup-plugin-commonjs'
+ import resolve from 'rollup-plugin-node-resolve'
++import replace from 'rollup-plugin-replace'
+
+ export default {
+   input: './src/scripts/main.js',
+@@ -25,6 +26,10 @@ export default {
+     }),
+     babel({
+       exclude: 'node_modules/**'
++    }),
++    replace({
++      exclude: 'node_modules/**',
++      ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+     })
+   ]
+-}
+```
+
+在发布时可以用 `NODE_ENV=production rollup -c` 来构建 disable debug.
