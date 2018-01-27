@@ -316,3 +316,37 @@ npm install --save-dev rollup-plugin-replace
 ```
 
 在发布时可以用 `NODE_ENV=production rollup -c` 来构建 disable debug.
+
+## 6 压缩代码
+
+最后，用 uglifyJS 我们来压缩下代码。
+
+```
+npm install --save-dev rollup-plugin-uglify
+```
+
+更新配置文件。
+
+```diff
+--- a/rollup.config.js
++++ b/rollup.config.js
+@@ -4,6 +4,7 @@ import eslint from 'rollup-plugin-eslint'
+ import commonjs from 'rollup-plugin-commonjs'
+ import resolve from 'rollup-plugin-node-resolve'
+ import replace from 'rollup-plugin-replace'
++import uglify from 'rollup-plugin-uglify'
+
+ export default {
+   input: './src/scripts/main.js',
+@@ -30,6 +31,7 @@ export default {
+     replace({
+       exclude: 'node_modules/**',
+       ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+-    })
++    }),
++               (process.env.NODE_ENV === 'production' && uglify())
+   ]
+ }
+```
+
+在构建进执行下面的命令: ` NODE_ENV=production rollup -c rollup.config.js ` 就 OK 了。
