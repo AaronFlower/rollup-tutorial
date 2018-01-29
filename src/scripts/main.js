@@ -3,6 +3,8 @@ import sumArray from './modules/sum'
 
 import debug from 'debug'
 
+import '../styles/main.css'
+
 const log = debug('app:log')
 
 if (ENV !== 'production') {
@@ -18,8 +20,10 @@ const sumFab = sumArray([1, 1, 2, 3, 5, 8, 13])
 let content = document.getElementById('content')
 
 content.innerHTML = `
-  <ul>
-  <li>sayHelloTo('Eason') : ${hiEason}</li>
-  <li>sumArray([1, 1, 2, 3, 5, 8, 13]): ${sumFab}</li>
-  </ul>
+  <pre>
+  <code>
+    sayHelloTo('Eason') : ${hiEason}
+    sumArray([1, 1, 2, 3, 5, 8, 13]): ${sumFab}
+  </code>
+  </pre>
 `

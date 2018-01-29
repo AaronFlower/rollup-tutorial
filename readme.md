@@ -350,3 +350,94 @@ npm install --save-dev rollup-plugin-uglify
 ```
 
 在构建进执行下面的命令: ` NODE_ENV=production rollup -c rollup.config.js ` 就 OK 了。
+
+# PART II
+
+## 引入样式
+
+和 webpack 一样，对于模块的引入支持的都是 JS 模块，如果我直接引入 css 文件支持吗？即如下：
+
+```javascript
+import '../styles/main.css'
+```
+
+引入文件是没有问题的，但是 import 还是把一切的文件当成了 JS 文件模块来处理，所以我们需要插件来对 css 文件处理成 JS 文件交给构建工具处理。下面使用 postcss 插件来处理。
+
+```bash
+ tnpm install --save-dev rollup-plugin-postcss  
+```
+
+修改配置：
+
+```diff
+ import resolve from 'rollup-plugin-node-resolve'
+ import replace from 'rollup-plugin-replace'
+ import uglify from 'rollup-plugin-uglify'
++import postcss from 'rollup-plugin-postcss'
+
+ export default {
+   input: './src/scripts/main.js',
+@@ -16,6 +17,9 @@ export default {
+   },
+
+   plugins: [
++    postcss({
++      extensions: ['.css']
++    }),
+     resolve({
+       jsnext: true,
+       main: true,
+@@ -23,7 +27,7 @@ export default {
+     }),
+     commonjs(),
+     eslint({
+-      exclude: 'styles/**'
++      exclude: 'src/styles/**'
+     }),
+     babel({
+       exclude: 'node_modules/**'
+```
+
+执行构建命令，可看出在构建出的 JS 中看到注入的 JS 代码 ` __$$styleInject`, 在引入时会调用该函数：
+
+```javascript
+function __$$styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+```
+
+我们可以使用 PostCSS 特性，使用下面几个插件：
+
+语法糖插件：
+
+- [`postcss-simple-vars`](https://github.com/postcss/postcss-simple-vars) — 可以使用 Sass 样式的变量。 (e.g. `$myColor: #fff;`）
+- [`postcss-nested`](https://github.com/postcss/postcss-nested) — 嵌入式。
+
+特性插件
+
+- [`postcss-cssnext`](http://cssnext.io/)  最新的 css 插件。
+- [`cssnano`](http://cssnano.co/) CSS 压缩插件。
+
