@@ -10,10 +10,12 @@ const log = debug('app:log')
 if (ENV !== 'production') {
   debug.enable('*')
   log('Logging is enabled!')
+  document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+  ':7080/livereload.js?snipver=1"></' + 'script>')
 } else {
   debug.disable()
 }
-
+ 
 const hiEason = sayHelloTo('Eason')
 const sumFab = sumArray([1, 1, 2, 3, 5, 8, 13])
 

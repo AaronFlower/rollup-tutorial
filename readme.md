@@ -441,3 +441,25 @@ function __$$styleInject(css, ref) {
 - [`postcss-cssnext`](http://cssnext.io/)  最新的 css 插件。
 - [`cssnano`](http://cssnano.co/) CSS 压缩插件。
 
+# PART III LiveReload
+
+## 添加 watch 插件
+
+```
+npm install --save-dev rollup-watch
+```
+
+这个插件的使用只需要在执行命令行的时指定 `--watch`选项就行了。
+
+```
+ rollup -c rollup.config.js --watch 
+```
+
+该插件只会帮你实时编译，但是不会为你自动刷新浏览器。如果想做自动刷新的话，还需要安装一个插件。
+
+```
+npm install --save-dev livereload
+```
+
+
+

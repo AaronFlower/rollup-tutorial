@@ -3,7 +3,7 @@
  */
 
 /* Variables */
-$color-heading: #111;
+$color-heading: #F11;
 $color-text: #444;
 $color-gradient-start: #efefff;
 $color-gradient-end: #fff;
@@ -29,4 +29,8 @@ body {
 	*+* {
 	  margin-top: 1rem;
 	}
+}
+
+h2 {
+	color: $color-heading;
 }
