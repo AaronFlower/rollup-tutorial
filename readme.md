@@ -461,5 +461,27 @@ npm install --save-dev rollup-watch
 npm install --save-dev livereload
 ```
 
+然后用 `npm-run-all` 来运行。
+
+```
+{
+  "name": "rollup-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "rollup -c ./rollup.config.js --watch",
+    "reload": "livereload 'build/' -p 7080",
+    "watch": "npm-run-all --parallel reload dev"
+  }
+}
+
+```
+
+```
+npm run watch
+```
+
 
 
